@@ -26,7 +26,7 @@ def fireball
 	req_mana = 6 
 	if has_mana?(req_mana) 
 		@mana-=req_mana 
-		rand(5...10)
+		rand(6..10)
 	end 
 end 
 

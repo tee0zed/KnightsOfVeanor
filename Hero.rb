@@ -19,14 +19,16 @@ def my_turn?
 end 
 
 def damage_taken=(damage)
-	if damage > @defence
-		damage-=@defence 
-		@hp-=damage
-	elsif damage.between?(1, @defence)
-		puts "Attack has been blocked!"
-	elsif damage == 0
-		puts "Miss!"
-	end 
+	unless damage.nil? 
+		if damage > @defence
+			damage-=@defence 
+			@hp-=damage
+		elsif damage.between?(1, @defence)
+			puts "Attack has been blocked!"
+		elsif damage == 0
+			puts "Miss!"
+		end 
+	end
 end 
 
 end 

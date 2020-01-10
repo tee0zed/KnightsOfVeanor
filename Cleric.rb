@@ -8,7 +8,7 @@ include Magic
 Mana = 40
 Hp = 40 
 Defence = 4
-Damage = 6
+Damage = 5
 Hit_chance = 7
 
 def initialize 
