@@ -1,7 +1,7 @@
-require "./Fighter.rb"
+require "./Hero.rb"
 require "./Magic.rb"
 
-class Battlemage < Fighter
+class Battlemage < Hero
 
 include Magic 
 

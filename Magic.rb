@@ -5,19 +5,32 @@ def hp_overload?
 end	
 
 def has_mana?(req_mana)
-	req_mana <= @mana ? true : false 
-end 
-
-def heal
-	req_mana = 10 
-	if has_mana?(req_mana) 
-		@hp += 8
-		hp_overload?
+	if req_mana <= @mana 
+		true 
 	else 
+		false
 		puts "Not enough mana!"
 	end 
 end 
 
+def heal
+	req_mana = 10 
+	if has_mana?(req_mana)
+		@mana-=req_mana
+		@hp += 8
+		hp_overload?
+	end 
+end 
 
+def fireball 
+	req_mana = 6 
+	if has_mana?(req_mana) 
+		@mana-=req_mana 
+		rand(5...8)
+	end 
+end 
+
+def shield 
+end 
 
 end 

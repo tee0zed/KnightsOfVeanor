@@ -1,4 +1,4 @@
-class Fighter 
+class Hero 
 
 attr_accessor :hp, :mana 
 
@@ -14,5 +14,8 @@ def whos_turn?
 #todo
 end 
 
+def damage_taken=(damage)
+	@hp-=damage 
+end 
 
 end 
