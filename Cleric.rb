@@ -1,9 +1,9 @@
 require "./Hero.rb"
-require "./Magic.rb"
+require "./Heal.rb"
 
 class Cleric < Hero 
 
-include Magic 
+include Heal 
 
 Mana = 40
 Hp = 40 
