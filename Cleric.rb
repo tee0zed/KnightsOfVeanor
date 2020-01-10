@@ -6,16 +6,17 @@ class Cleric < Hero
 include Magic 
 
 Mana = 40
-Hp = 40
-Defence = 15
-Damage = 4 
+Hp = 40 
+Defence = 4
+Damage = 6
+Hit_chance = 7
 
 def initialize 
 	@hp = Hp
 	@mana = Mana 
 	@defence = Defence
 	@damage = Damage
+	@hit_chance = Hit_chance
 end 
-
 
 end 

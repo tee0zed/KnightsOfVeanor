@@ -26,11 +26,15 @@ def fireball
 	req_mana = 6 
 	if has_mana?(req_mana) 
 		@mana-=req_mana 
-		rand(5...8)
+		rand(5...10)
 	end 
 end 
 
 def shield 
+	req_mana = 5 
+	if has_mana?(req_mana)
+		@mana-=req_mana 
+	end 
 end 
 
 end 
