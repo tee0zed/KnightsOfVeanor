@@ -1,0 +1,4 @@
+requre "./Cleric.rb"
+
+Markus = Cleric.new
+
