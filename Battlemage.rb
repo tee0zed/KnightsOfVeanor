@@ -1,37 +1,18 @@
-require "./Hero.rb"
-require "./Heal.rb"
+require './hero.rb'
+require './heal.rb'
 
 class Battlemage < Hero
 
-include Heal 
+  include Heal
 
-Mana = 60
-Hp = 30
-Defence = 1
-Damage = 3
-Hit_chance = 4 
+  MANA = 60
+  HP = 30
+  DEFENCE = 1
+  DAMAGE = 3
+  HIT_CHANCE = 4
 
-def initialize 
-	@hp = Hp
-	@mana = Mana 
-	@defence = Defence
-	@damage = Damage
-	@hit_chance = Hit_chance
-end 
+  def initialize(name)
+  super
+  end
 
-def fireball 
-	req_mana = 6 
-	if has_mana?(req_mana) 
-		@mana-=req_mana 
-		rand(6..10)
-	end 
-end 
-
-def shield 
-	req_mana = 5 
-	if has_mana?(req_mana)
-		@mana-=req_mana 
-	end 
-end 
-
-end 
+end

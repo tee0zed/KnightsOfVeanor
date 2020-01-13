@@ -1,22 +1,18 @@
-require "./Hero.rb"
-require "./Heal.rb"
+require "./hero.rb"
+require "./heal.rb"
 
 class Cleric < Hero 
 
-include Heal 
+  include Heal
 
-Mana = 40
-Hp = 40 
-Defence = 4
-Damage = 5
-Hit_chance = 7
+  MANA = 40
+  HP = 40
+  DEFENCE = 4
+  DAMAGE = 5
+  HIT_CHANCE = 7
 
-def initialize 
-	@hp = Hp
-	@mana = Mana 
-	@defence = Defence
-	@damage = Damage
-	@hit_chance = Hit_chance
-end 
+  def initialize(name)
+  super
+  end 
 
 end 
