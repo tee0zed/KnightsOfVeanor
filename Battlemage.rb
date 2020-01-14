@@ -6,13 +6,17 @@ class Battlemage < Hero
   include Heal
 
   MANA = 60
-  HP = 30
-  DEFENCE = 1
+  HP = 35
+  DEFENCE = 2
   DAMAGE = 3
   HIT_CHANCE = 4
 
+
   def initialize(name)
-  super
+    super
   end
 
+  def abilities
+    [Magic.shield, Magic.fireball, Magic.firestorm, Magic.curse]
+  end
 end
