@@ -1,40 +1,51 @@
-require 'byebug'
 
 class Game
 
   def initialize
-    @@current_turn = 1
+    @player1 = Game.hero_create
+    @player2 = Game.hero_create
+    @current_turn = 0
+    @turn = Abilities.new(@player1, @player2)
   end
 
-  def self.new_turn
-    @@current_turn += 1
+  def new_turn
+    @player1.new_turn
+    @player2.new_turn
+    self.cli 
+    @current_turn += 1 
+    puts "#{@player1.hero_name} turn!"
+    ability_choise(@player1)
+    self.cli
+    @turn.switch_sides
+    puts "#{@player2.hero_name} turn!"
+    ability_choise(@player2)
   end
 
-  def self.current_turn
-    @@current_turn
+  def current_turn
+    @current_turn
   end
 
 
-  def self.cli(player1, player2)
-    print "\t   >>>>>>>>>>#{Game.current_turn} TURN<<<<<<<<<<\n\r"
-    print "\n=================================================\r"
-    print "#{print_stats(player1)}"
-    print "\n=================================================\r"
-    print "#{print_stats(player2)}"
-    print "\n=================================================\r\n\n\n"
+  def cli
+    puts "\t   >>>>>>>>>>#{self.current_turn} TURN<<<<<<<<<<\n\r"
+    puts "\n=======================================================\r"
+    puts "#{print_stats(@player1)}"
+    puts "\n=======================================================\r"
+    puts "#{print_stats(@player2)}"
+    puts "\n=======================================================\r\n\n\n"
   end
 
-  def self.print_hp(player)
+  def print_hp(player)
     el = '#'
     el * player.hp
   end
 
-  def self.print_mana(player)
+  def print_mana(player)
     el = '#'
     el * player.mana
   end
 
-  def self.print_effects(player)
+  def print_effects(player)
     player.status.each do |stat|
       if stat[1][1].is_a? TrueClass
         print "\n#{stat[0]} lasts for #{stat[1][0]} turn(s)"
@@ -43,13 +54,13 @@ class Game
     print "\nDef #{player.defence} \nDmg #{player.damage} \nHit Chance #{player.hit_chance}"
   end
 
-  def self.print_stats(player)
+  def print_stats(player)
     print "\n#{player.hero_name}, #{player.class.name} \nHP #{print_hp(player)} \nMP #{print_mana(player)}"
     print_effects(player)
   end
 
   def self.hero_create
-    puts "Player choose your character:"
+    puts "Player choose your character:\r"
     Hero.hero_types.each_with_index do |hero, i|
       puts "#{i + 1} - #{hero}"
     end
@@ -58,25 +69,36 @@ class Game
       choice = STDIN.gets.chomp.to_i
     end
     puts "Name your character:"
-    name = gets.chomp
+    name = STDIN.gets.chomp
     Hero.create(choice, name)
   end
 
-  def self.ability_choise(player)
+  def ability_choise(player)
     puts "Choose ability"
     i = 1
-    player.abilities.each_with_index  do |item, index|
-      puts "#{index} - #{item}"
+    player.abilities.each  do |key, value|
+      puts "#{i} - #{value}"
+      i += 1 
     end
     choice = 0
     until choice.between?(1, player.abilities.size)
+      puts "Input must be between 1 and #{player.abilities.size}"
       choice = STDIN.gets.chomp.to_i
     end
-    player.abilities[choice - 1]
+    @turn.abilities_list[player.abilities.keys[choice - 1]].call 
   end
 
-  def self.game_end(player)
-    puts "#{player.hero_name} is dead!"
+  def self.game_end
+    byebug
+    puts "XX    XXXXX   XXXX   XXXXXXX  X    X 
+          X  X  X      X    X     X     X    X
+          X  XX XXXXX  X    X     X     XXXXXX
+          X  X  X      XXXXXX     X     X    X
+          XX    XXXXX  X    X     X     X    X  
+
+    \t\t#{@player1.hero_name} is dead!"
+    sleep 1 
+    eval("break")  
   end
 
 end

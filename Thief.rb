@@ -1,5 +1,4 @@
 require './hero.rb'
-require './heal.rb'
 
 class Thief < Hero
 
@@ -8,13 +7,10 @@ class Thief < Hero
   DEFENCE = 4
   DAMAGE = 8
   HIT_CHANCE = 9
-
-
+  ABILITIES = {attack: "Attack", defending_stance: "Defending stance", blade_dancing: "Blade Dancing - 50% double damage chance, otherwise - half damage will be dealed"}
+  
   def initialize(name)
     super
   end
 
-  def abilities
-    [Magic.blade_dancing]
-  end
 end

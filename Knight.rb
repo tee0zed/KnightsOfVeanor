@@ -1,5 +1,4 @@
 require "./hero.rb"
-require "./heal.rb"
 
 class Knight < Hero
 
@@ -8,13 +7,10 @@ class Knight < Hero
   DEFENCE = 5
   DAMAGE = 8
   HIT_CHANCE = 8
-
+  ABILITIES = {attack: "Attack", defending_stance: "Defending stance", rage:"Rage", devastating_blow:"Devastating blow"}
 
   def initialize(name)
     super
   end
 
-  def abilities
-    [Magic.devastating_blow, Magic.rage]
-  end
 end

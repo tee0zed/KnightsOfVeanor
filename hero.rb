@@ -15,12 +15,13 @@ class Hero
     @defence = self.class::DEFENCE
     @damage = self.class::DAMAGE
     @hit_chance = self.class::HIT_CHANCE
+    @abilities = self.class::ABILITIES 
 
     @hero_name = name
 
   end
 
-  attr_accessor :hp, :mana, :defence, :damage, :status, :hero_name, :hit_chance
+  attr_accessor :hp, :mana, :defence, :damage, :status, :hero_name, :hit_chance, :abilities
 
 
   def self.hero_types
@@ -29,21 +30,6 @@ class Hero
 
   def self.create(type, name)
     return Hero.hero_types[type - 1].new(name)
-  end
-
-  def attack
-    if rand(@hit_chance..10) > rand(1..10)
-      @damage
-    else
-      0
-    end
-  end
-
-  def defending_stance
-    self.status[:stance][0] = 1
-    self.status[:stance][1] = true
-    self.defence += 5
-    puts "#{self.hero_name} in defending stance!"
   end
 
   def has_mana?(req_mana)
@@ -57,7 +43,7 @@ class Hero
 
   def melee_damage_taken=(damage)
     if damage >= @hp
-      Game.game_end(self)
+       Game.game_end 
     else
       if damage > @defence
         damage -= @defence
@@ -72,29 +58,31 @@ class Hero
 
   def magic_damage_taken=(damage)
     if damage >= @hp
-      Game.game_end(self)
+      Game.game_end
     else
       @hp -= damage
     end
   end
 
   def new_turn
-    self.status.each do |key|
-      if key[0].zero?
-        self.status_check(key)
+    self.status.each do |key, value|
+      
+      if value[0].zero?
+        self.status_check(key,value)
       else
-        key[0] -= 1
+        value[0] -= 1
       end
     end
   end
 
-  def status_check(key)
-    key[1].is_a? TrueClass
-    self.set_default_stats(key)
+  def status_check(key,value)
+    if value[1].is_a? TrueClass
+    self.set_default_stats(key, value)
+    end 
   end
 
-  def set_default_stats(key)
-    self.stats[key][1] = false
+  def set_default_stats(key, value)
+    self.status[key][1] = false
     case key
     when :stance
       self.defence -= 5
