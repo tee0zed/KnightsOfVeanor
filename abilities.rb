@@ -46,15 +46,6 @@ class Abilities
     puts "#{@caster.hero_name} in defending stance!"
   end
 
-  stance = {stat: :stance, turns: 1, text: "#{@caster.hero_name} in defending stance!"}
-
-  def buff(stat)
-    @caster.status[stat[:stat]][0] = stat[:turns]
-    @caster.status[stat[:stat]][1] = false
-    @caster.defence += stat[:value]
-    puts stat[:text]
-  end
-
   def blade_dancing
     if rand(@caster.hit_chance..10) > rand(1..10)
       if rand(2) == 1
@@ -84,54 +75,51 @@ class Abilities
     end
   end
 
-  def fireball
-    req_mana = 6
+  def damage_spell(spell)
+    req_mana = spell[:mana]
     if @caster.has_mana?(req_mana)
       @caster.mana -= req_mana
-      @opponent.magic_damage_taken = rand(6..10)
+      @opponent.magic_damage_taken = rand(spell[:min]..spell[:max])
     else
       Magic.ability_choice(@caster)
     end
   end
 
-  def firestorm
-    req_mana = 10
-    if @caster.has_mana?(req_mana)
-      @caster.mana -= req_mana
-      @opponent.magic_damage_taken = rand(10..15)
+  dmg_spells = {
+      fireball: {mana: 6, min: 6, max: 10},
+      firestorm: {mana: 10, min: 10, max: 15},
+      lightingbolt: {mana: 7, min: 8, max: 11}
+  }
+
+
+  def buff(buffs)
+    req_mana = buffs[:mana]
+    if buffs[:caster].has_mana?(req_mana)
+      buffs[:caster].status[buffs[0] = 3
+      buffs[:caster].status[buffs][1] = true
+      buffs[:caster].mana -= req_mana
+      buffs[:caster].buffs[:stat] += buffs[:value]
+      buffs[:second_stat].nil?
+      
+      puts buffs[:text]
     else
       Magic.ability_choice(@caster)
     end
   end
 
-  def lightingbolt
-    req_mana = 7
-    if @caster.has_mana?(req_mana)
-      @caster.mana -= req_mana
-      @opponent.magic_damage_taken = rand(8..11)
-    else
-      Magic.ability_choice(@caster)
-    end
-  end
+  buffs = {
+      shield: {spell: :shield, caster: @caster, opponent:, mana: 5, turns: 3, stat: :defence, second_stat:, value: 5
+      text: "#{@caster.hero_name} doubled defence for 2 more rounds!" },
+      curse: {}
 
-  def shield
-    req_mana = 5
-    if @caster.has_mana?(req_mana)
-      @caster.status[:shield][0] = 3
-      @caster.status[:shield][1] = true
-      @caster.mana -= req_mana
-      @caster.defence += 5
-      puts "#{@caster.hero_name} doubled defence for 2 more rounds!"
-    else
-      Magic.ability_choice(@caster)
-    end
-  end
+
+  }
 
   def curse
     req_mana = 8
     if @caster.has_mana?(req_mana)
-      @caster.status[:curse][0] = 3
-      @caster.status[:curse][1] = false
+      @opponent.status[:curse][0] = 3
+      @opponent.status[:curse][1] = true
       @caster.mana -= req_mana
       @opponent.defence -= 3
       @opponent.damage -= 3
@@ -145,7 +133,7 @@ class Abilities
     req_mana = 5
     if @caster.has_mana?(req_mana)
       @caster.status[:rage][0] = 2
-      @caster.status[:rage][1] = false
+      @caster.status[:rage][1] = true
       @caster.mana -= req_mana
       @caster.damage += 4
       puts "#{@caster.hero_name} doubled damage for 2 more rounds!"
