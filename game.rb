@@ -85,7 +85,8 @@ class Game
       puts "Input must be between 1 and #{player.abilities.size}"
       choice = STDIN.gets.chomp.to_i
     end
-    @turn.abilities_list[player.abilities.keys[choice - 1]].call 
+    byebug
+    @turn.method(@player1.abilities.keys[choice-1]).call
   end
 
   def self.game_end

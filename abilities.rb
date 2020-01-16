@@ -1,4 +1,5 @@
-class Abilities 
+class Abilities
+
 
   attr_accessor :caster, :opponent
 
@@ -9,12 +10,6 @@ class Abilities
 
   def switch_sides
     @caster, @opponent = @opponent, @caster
-  end
-
-  def abilities_list
-    {heal: method(:heal), defending_stance: method(:defending_stance), attack: method(:attack), blade_dancing: method(:blade_dancing), devastating_blow: method(:devastating_blow),
-     fireball: method(:fireball), firestorm: method(:firestorm), lightingbolt: method(:lightingbolt),
-     shield: method(:shield), curse: method(:curse), rage: method(:rage), blessing: method(:blessing)}
   end
 
   def heal
@@ -51,6 +46,15 @@ class Abilities
     puts "#{@caster.hero_name} in defending stance!"
   end
 
+  stance = {stat: :stance, turns: 1, text: "#{@caster.hero_name} in defending stance!"}
+
+  def buff(stat)
+    @caster.status[stat[:stat]][0] = stat[:turns]
+    @caster.status[stat[:stat]][1] = false
+    @caster.defence += stat[:value]
+    puts stat[:text]
+  end
+
   def blade_dancing
     if rand(@caster.hit_chance..10) > rand(1..10)
       if rand(2) == 1
@@ -79,7 +83,6 @@ class Abilities
       Magic.ability_choice(@caster)
     end
   end
-
 
   def fireball
     req_mana = 6
