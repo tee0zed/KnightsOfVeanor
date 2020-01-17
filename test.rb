@@ -12,10 +12,9 @@ require 'byebug'
 
 game = Game.new
 
-
 loop do 
-	game.cli 
+	
 	game.new_turn 
-	game.cli
+	
 end 
 	

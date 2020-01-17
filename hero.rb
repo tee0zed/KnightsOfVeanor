@@ -34,7 +34,7 @@ class Hero
 
   def has_mana?(req_mana)
     if req_mana > @mana
-      puts "Not enough mana!"
+      print "Not enough mana!"
       false
     else
       true
@@ -49,9 +49,9 @@ class Hero
         damage -= @defence
         @hp -= damage
       elsif damage.between?(1, @defence)
-        puts "Attack has been blocked!"
+        print "Attack has been blocked!"
       elsif damage == 0
-        puts "Miss!"
+        print "Miss!"
       end
     end
   end
@@ -64,9 +64,8 @@ class Hero
     end
   end
 
-  def new_turn
+  def stats_update
     self.status.each do |key, value|
-      
       if value[0].zero?
         self.status_check(key,value)
       else

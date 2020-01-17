@@ -1,6 +1,8 @@
 
 class Game
 
+  attr_accessor :turn, :player1, :player2 
+
   def initialize
     @player1 = Game.hero_create
     @player2 = Game.hero_create
@@ -9,16 +11,17 @@ class Game
   end
 
   def new_turn
-    @player1.new_turn
-    @player2.new_turn
-    self.cli 
-    @current_turn += 1 
+    @player1.stats_update
+    @player2.stats_update
+    self.cli
     puts "#{@player1.hero_name} turn!"
-    ability_choise(@player1)
+    @turn.ability_choice
     self.cli
     @turn.switch_sides
     puts "#{@player2.hero_name} turn!"
-    ability_choise(@player2)
+    self.cli
+    @turn.ability_choice
+    @current_turn += 1 
   end
 
   def current_turn
@@ -27,12 +30,13 @@ class Game
 
 
   def cli
-    puts "\t   >>>>>>>>>>#{self.current_turn} TURN<<<<<<<<<<\n\r"
-    puts "\n=======================================================\r"
-    puts "#{print_stats(@player1)}"
-    puts "\n=======================================================\r"
-    puts "#{print_stats(@player2)}"
-    puts "\n=======================================================\r\n\n\n"
+    system "clear"
+    print "\t   >>>>>>>>>>#{self.current_turn} TURN<<<<<<<<<<\n\r"
+    print "\n=======================================================\r"
+    print "#{print_stats(@player1)}\r"
+    print "\n=======================================================\r"
+    print "#{print_stats(@player2)}\r"
+    print "\n=======================================================\n\n\n\n\r"
   end
 
   def print_hp(player)
@@ -73,29 +77,12 @@ class Game
     Hero.create(choice, name)
   end
 
-  def ability_choise(player)
-    puts "Choose ability"
-    i = 1
-    player.abilities.each  do |key, value|
-      puts "#{i} - #{value}"
-      i += 1 
-    end
-    choice = 0
-    until choice.between?(1, player.abilities.size)
-      puts "Input must be between 1 and #{player.abilities.size}"
-      choice = STDIN.gets.chomp.to_i
-    end
-    byebug
-    @turn.method(@player1.abilities.keys[choice-1]).call
-  end
-
   def self.game_end
-    byebug
-    puts "XX    XXXXX   XXXX   XXXXXXX  X    X 
-          X  X  X      X    X     X     X    X
-          X  XX XXXXX  X    X     X     XXXXXX
-          X  X  X      XXXXXX     X     X    X
-          XX    XXXXX  X    X     X     X    X  
+    puts "XX     XXXXX   XXXX   XXXXXXX  X    X 
+          X  X   X      X    X     X     X    X
+          X  XX  XXXXX  X    X     X     XXXXXX
+          X  X   X      XXXXXX     X     X    X
+          XX     XXXXX  X    X     X     X    X  
 
     \t\t#{@player1.hero_name} is dead!"
     sleep 1 

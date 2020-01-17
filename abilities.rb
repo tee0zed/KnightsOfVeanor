@@ -1,3 +1,6 @@
+require 'byebug'
+
+
 class Abilities
 
 
@@ -6,22 +9,58 @@ class Abilities
   def initialize(player1, player2)
     @caster = player1
     @opponent = player2
+
   end
+
 
   def switch_sides
     @caster, @opponent = @opponent, @caster
   end
 
+
+  def ability_choice 
+    puts "Choose ability"
+
+    i = 1
+
+    @caster.abilities.each  do |key, value|
+      puts "#{i} - #{value}"
+      i += 1 
+    end
+
+    choice = 0
+
+    until choice.between?(1, @caster.abilities.size)
+      puts "Input must be between 1 and #{@caster.abilities.size}"
+      choice = STDIN.gets.chomp.to_i
+    end
+    ability = @caster.abilities.keys[choice-1] 
+
+  magic = case ability 
+          when :rage, :blessing, :curse, :shield
+          buff(buffs[ability]) 
+          when :fireball, :firestorm, :lightingbolt
+          damage_spell(dmg_spells[ability])
+          else
+          ability 
+          end 
+          magic      
+  end
+
+
   def heal
     req_mana = 6
+
     if @caster.has_mana?(req_mana)
       @caster.mana-=req_mana
       @caster.hp+=rand(6..10)
       hp_overload?
     else 
-      Magic.ability_choice(@caster)
+      self.ability_choice
     end
+
   end
+
 
   def hp_overload?
     
@@ -29,25 +68,37 @@ class Abilities
      @caster.hp = @caster.class::HP 
      puts "HP is full!"
     end 
+
   end
 
+
   def attack
+
     if rand(@caster.hit_chance..10) > rand(1..10)
       @opponent.melee_damage_taken = @caster.damage
     else
       @opponent.melee_damage_taken = 0
     end
+
   end
 
   def defending_stance
+
     @caster.status[:stance][0] = 1
+    
     @caster.status[:stance][1] = true
-    @caster.defence += 5
-    puts "#{@caster.hero_name} in defending stance!"
+    
+    @caster.defence += 3
+    
+    puts "#{@caster.hero_name} is in defending stance!"
+  
   end
 
+
   def blade_dancing
+
     if rand(@caster.hit_chance..10) > rand(1..10)
+
       if rand(2) == 1
         puts "Double strike!"
         @opponent.melee_damage_taken = @caster.damage * 2
@@ -55,104 +106,92 @@ class Abilities
         puts "Weak strike!"
         @opponent.melee_damage_taken = @caster.damage / 2
       end
+    
     else
      @opponent.melee_damage_taken = 0
     end
   end
 
+
   def devastating_blow
     req_mana = 5
     if @caster.has_mana?(req_mana)
       @caster.mana -= req_mana
+
       if rand(@caster.hit_chance..10) > rand(1..10)
         puts "Devastating blow!"
         @opponent.melee_damage_taken = @caster.damage * 1.5
       else
         @opponent.melee_damage_taken = 0
       end
+    
     else 
-      Magic.ability_choice(@caster)
+      self.ability_choice
     end
   end
+
 
   def damage_spell(spell)
     req_mana = spell[:mana]
+
     if @caster.has_mana?(req_mana)
+    
       @caster.mana -= req_mana
+
+      puts " "
+
       @opponent.magic_damage_taken = rand(spell[:min]..spell[:max])
+    
     else
-      Magic.ability_choice(@caster)
+      self.ability_choice
     end
   end
 
-  dmg_spells = {
+
+  def dmg_spells 
+  {
       fireball: {mana: 6, min: 6, max: 10},
       firestorm: {mana: 10, min: 10, max: 15},
       lightingbolt: {mana: 7, min: 8, max: 11}
   }
+  end 
+
+
+  def buffs 
+  {
+      shield: {spell: :shield, target: caster, mana: 5, turns: 3, stat: caster.defence, second_stat: nil, value: 5, second_value: nil,
+      text: "doubled defence for 2 more rounds!" },
+      curse: {spell: :curse, target: opponent, mana: 8, turns: 3, stat: opponent.defence, second_stat: opponent.damage, value: -3, second_value: -3,
+      text: "cursed opponent for 2 more rounds!" }, 
+      rage: {spell: :rage, target: caster, mana: 5, turns: 2, stat: caster.damage, second_stat: nil, value: 4, second_value: nil, 
+      text: "doubled damage for 2 more rounds!" },
+      blessing: {spell: :blessing, target: caster, mana: 8, turns: 2, stat: caster.defence, second_stat: caster.damage, value: 4, second_value: 4, 
+        text: "blessed for 2 more rounds!" }
+      
+  }
+  end 
 
 
   def buff(buffs)
     req_mana = buffs[:mana]
-    if buffs[:caster].has_mana?(req_mana)
-      buffs[:caster].status[buffs[0] = 3
-      buffs[:caster].status[buffs][1] = true
-      buffs[:caster].mana -= req_mana
-      buffs[:caster].buffs[:stat] += buffs[:value]
-      buffs[:second_stat].nil?
+
+    if @caster.has_mana?(req_mana)
+
+      buffs[:target].status[buffs[:spell]][0] = buffs[:turns]
+
+      buffs[:target].status[buffs[:spell]][1] = true
       
-      puts buffs[:text]
-    else
-      Magic.ability_choice(@caster)
-    end
-  end
-
-  buffs = {
-      shield: {spell: :shield, caster: @caster, opponent:, mana: 5, turns: 3, stat: :defence, second_stat:, value: 5
-      text: "#{@caster.hero_name} doubled defence for 2 more rounds!" },
-      curse: {}
-
-
-  }
-
-  def curse
-    req_mana = 8
-    if @caster.has_mana?(req_mana)
-      @opponent.status[:curse][0] = 3
-      @opponent.status[:curse][1] = true
       @caster.mana -= req_mana
-      @opponent.defence -= 3
-      @opponent.damage -= 3
-      puts "#{@opponent.hero_name} cursed for 2 more rounds!"
-    else
-      Magic.ability_choice(@caster)
-    end
-  end
+      
+      buffs[:stat] += buffs[:value]
 
-  def rage
-    req_mana = 5
-    if @caster.has_mana?(req_mana)
-      @caster.status[:rage][0] = 2
-      @caster.status[:rage][1] = true
-      @caster.mana -= req_mana
-      @caster.damage += 4
-      puts "#{@caster.hero_name} doubled damage for 2 more rounds!"
-    else
-      Magic.ability_choice(@caster)
-    end
-  end
+      if !buffs[:second_stat].nil?
+        buffs[:second_stat] += buffs[:second_value]
+      end 
 
-  def blessing
-    req_mana = 8
-    if @caster.has_mana?(req_mana)
-      @caster.status[:blessing][0] = 2
-      @caster.status[:blessing][1] = true
-      @caster.mana -= req_mana
-      @caster.damage += 3
-      @caster.defence += 3
-      puts "#{@caster.hero_name} blessed for 2 more rounds!"
+      puts "#{@caster.hero_name} #{buffs[:text]}"
     else
-      Magic.ability_choice(@caster)
+      self.ability_choice
     end
   end
 
