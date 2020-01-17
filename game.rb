@@ -16,10 +16,9 @@ class Game
     self.cli
     puts "#{@player1.hero_name} turn!"
     @turn.ability_choice
-    self.cli
     @turn.switch_sides
-    puts "#{@player2.hero_name} turn!"
     self.cli
+    puts "#{@player2.hero_name} turn!"
     @turn.ability_choice
     @current_turn += 1 
   end
@@ -78,13 +77,14 @@ class Game
   end
 
   def self.game_end
+    byebug
     puts "XX     XXXXX   XXXX   XXXXXXX  X    X 
           X  X   X      X    X     X     X    X
           X  XX  XXXXX  X    X     X     XXXXXX
           X  X   X      XXXXXX     X     X    X
           XX     XXXXX  X    X     X     X    X  
 
-    \t\t#{@player1.hero_name} is dead!"
+    \t\t#{@turn.opponent.hero_name} is dead!"
     sleep 1 
     eval("break")  
   end

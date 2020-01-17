@@ -42,7 +42,7 @@ class Abilities
           when :fireball, :firestorm, :lightingbolt
           damage_spell(dmg_spells[ability])
           else
-          ability 
+          method(ability).call 
           end 
           magic      
   end
@@ -52,8 +52,8 @@ class Abilities
     req_mana = 6
 
     if @caster.has_mana?(req_mana)
-      @caster.mana-=req_mana
-      @caster.hp+=rand(6..10)
+      @caster.mana -= req_mana
+      @caster.hp += rand(6..10)
       hp_overload?
     else 
       self.ability_choice
@@ -74,8 +74,9 @@ class Abilities
 
   def attack
 
-    if rand(@caster.hit_chance..10) > rand(1..10)
+    if rand(10) < rand(@caster.hit_chance..10)
       @opponent.melee_damage_taken = @caster.damage
+      
     else
       @opponent.melee_damage_taken = 0
     end
@@ -120,9 +121,9 @@ class Abilities
 
       if rand(@caster.hit_chance..10) > rand(1..10)
         puts "Devastating blow!"
-        @opponent.melee_damage_taken = @caster.damage * 1.5
+        @turn.opponent.melee_damage_taken = @turn.caster.damage * 1.5
       else
-        @opponent.melee_damage_taken = 0
+        @turn.opponent.melee_damage_taken = 0
       end
     
     else 

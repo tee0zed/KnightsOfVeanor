@@ -49,9 +49,9 @@ class Hero
         damage -= @defence
         @hp -= damage
       elsif damage.between?(1, @defence)
-        print "Attack has been blocked!"
+        print "Attack has been blocked!\n\n\n\n\n"
       elsif damage == 0
-        print "Miss!"
+        print "Miss!\n\n\n\n\n"
       end
     end
   end
