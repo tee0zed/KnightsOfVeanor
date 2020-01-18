@@ -9,7 +9,6 @@ class Abilities
   def initialize(player1, player2)
     @caster = player1
     @opponent = player2
-
   end
 
 
@@ -34,17 +33,20 @@ class Abilities
       puts "Input must be between 1 and #{@caster.abilities.size}"
       choice = STDIN.gets.chomp.to_i
     end
-    ability = @caster.abilities.keys[choice-1] 
 
-  magic = case ability 
-          when :rage, :blessing, :curse, :shield
-          buff(buffs[ability]) 
-          when :fireball, :firestorm, :lightingbolt
-          damage_spell(dmg_spells[ability])
-          else
-          method(ability).call 
-          end 
-          magic      
+    ability = @caster.abilities.keys[choice-1]
+    case ability
+    when :rage, :blessing, :curse, :shield
+      if @caster.status[ability][1].is_a?(FalseClass)
+        buff(buffs[ability])
+      else
+        self.ability_choice
+      end
+    when :fireball, :firestorm, :lightingbolt
+    damage_spell(dmg_spells[ability])
+    else
+    method(ability).call
+    end
   end
 
 
@@ -52,9 +54,9 @@ class Abilities
     req_mana = 6
 
     if @caster.has_mana?(req_mana)
-      @caster.mana -= req_mana
-      @caster.hp += rand(6..10)
-      hp_overload?
+      @caster.stats[:mana] -= req_mana
+      @caster.stats[:hp] += rand(6..10)
+      self.hp_overload?
     else 
       self.ability_choice
     end
@@ -63,19 +65,19 @@ class Abilities
 
 
   def hp_overload?
-    
-    if @caster.hp > @caster.class::HP
-     @caster.hp = @caster.class::HP 
+
+    if @caster.stats[:hp] > @caster.class::HP
+     @caster.stats[:hp] = @caster.class::HP
      puts "HP is full!"
-    end 
+    end
 
   end
 
 
   def attack
 
-    if rand(10) < rand(@caster.hit_chance..10)
-      @opponent.melee_damage_taken = @caster.damage
+    if rand(10) < rand(@caster.stats[:hit_chance]..10)
+      @opponent.melee_damage_taken = @caster.stats[:damage]
       
     else
       @opponent.melee_damage_taken = 0
@@ -85,11 +87,11 @@ class Abilities
 
   def defending_stance
 
-    @caster.status[:stance][0] = 1
+    @caster.status[:stance][0] = 0
     
     @caster.status[:stance][1] = true
     
-    @caster.defence += 3
+    @caster.stats[:defence] += 3
     
     puts "#{@caster.hero_name} is in defending stance!"
   
@@ -98,14 +100,14 @@ class Abilities
 
   def blade_dancing
 
-    if rand(@caster.hit_chance..10) > rand(1..10)
+    if rand(@caster.stats[:hit_chance]..10) > rand(1..10)
 
       if rand(2) == 1
         puts "Double strike!"
-        @opponent.melee_damage_taken = @caster.damage * 2
+        @opponent.melee_damage_taken = @caster.stats[:damage] * 2
       else
         puts "Weak strike!"
-        @opponent.melee_damage_taken = @caster.damage / 2
+        @opponent.melee_damage_taken = @caster.stats[:damage] / 2
       end
     
     else
@@ -117,13 +119,13 @@ class Abilities
   def devastating_blow
     req_mana = 5
     if @caster.has_mana?(req_mana)
-      @caster.mana -= req_mana
+      @caster.stats[:mana] -= req_mana
 
-      if rand(@caster.hit_chance..10) > rand(1..10)
+      if rand(@caster.stats[:hit_chance]..10) > rand(1..10)
         puts "Devastating blow!"
-        @turn.opponent.melee_damage_taken = @turn.caster.damage * 1.5
+        @opponent.melee_damage_taken = @caster.stats[:damage] * 1.5
       else
-        @turn.opponent.melee_damage_taken = 0
+        @opponent.melee_damage_taken = 0
       end
     
     else 
@@ -137,9 +139,7 @@ class Abilities
 
     if @caster.has_mana?(req_mana)
     
-      @caster.mana -= req_mana
-
-      puts " "
+      @caster.stats[:mana] -= req_mana
 
       @opponent.magic_damage_taken = rand(spell[:min]..spell[:max])
     
@@ -160,13 +160,13 @@ class Abilities
 
   def buffs 
   {
-      shield: {spell: :shield, target: caster, mana: 5, turns: 3, stat: caster.defence, second_stat: nil, value: 5, second_value: nil,
+      shield: {spell: :shield, target: @caster, mana: 5, turns: 3, stat: :defence, second_stat: nil, value: 5, second_value: nil,
       text: "doubled defence for 2 more rounds!" },
-      curse: {spell: :curse, target: opponent, mana: 8, turns: 3, stat: opponent.defence, second_stat: opponent.damage, value: -3, second_value: -3,
+      curse: {spell: :curse, target: @opponent, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: -3, second_value: -3,
       text: "cursed opponent for 2 more rounds!" }, 
-      rage: {spell: :rage, target: caster, mana: 5, turns: 2, stat: caster.damage, second_stat: nil, value: 4, second_value: nil, 
+      rage: {spell: :rage, target: @caster, mana: 5, turns: 2, stat: :damage, second_stat: nil, value: 4, second_value: nil,
       text: "doubled damage for 2 more rounds!" },
-      blessing: {spell: :blessing, target: caster, mana: 8, turns: 2, stat: caster.defence, second_stat: caster.damage, value: 4, second_value: 4, 
+      blessing: {spell: :blessing, target: @caster, mana: 8, turns: 2, stat: :defence, second_stat: :damage, value: 4, second_value: 4,
         text: "blessed for 2 more rounds!" }
       
   }
@@ -175,20 +175,19 @@ class Abilities
 
   def buff(buffs)
     req_mana = buffs[:mana]
-
     if @caster.has_mana?(req_mana)
 
       buffs[:target].status[buffs[:spell]][0] = buffs[:turns]
 
       buffs[:target].status[buffs[:spell]][1] = true
       
-      @caster.mana -= req_mana
-      
-      buffs[:stat] += buffs[:value]
+      @caster.stats[:mana] -= req_mana
 
-      if !buffs[:second_stat].nil?
-        buffs[:second_stat] += buffs[:second_value]
-      end 
+      buffs[:target].stats[buffs[:stat]] += buffs[:value]
+
+      unless buffs[:second_stat].nil?
+        buffs[:target].stats[buffs[:second_stat]] += buffs[:second_value]
+      end
 
       puts "#{@caster.hero_name} #{buffs[:text]}"
     else

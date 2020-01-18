@@ -11,8 +11,6 @@ class Game
   end
 
   def new_turn
-    @player1.stats_update
-    @player2.stats_update
     self.cli
     puts "#{@player1.hero_name} turn!"
     @turn.ability_choice
@@ -20,7 +18,10 @@ class Game
     self.cli
     puts "#{@player2.hero_name} turn!"
     @turn.ability_choice
-    @current_turn += 1 
+    @current_turn += 1
+    @turn.switch_sides
+    @player1.stats_update
+    @player2.stats_update
   end
 
   def current_turn
@@ -29,7 +30,6 @@ class Game
 
 
   def cli
-    system "clear"
     print "\t   >>>>>>>>>>#{self.current_turn} TURN<<<<<<<<<<\n\r"
     print "\n=======================================================\r"
     print "#{print_stats(@player1)}\r"
@@ -40,21 +40,21 @@ class Game
 
   def print_hp(player)
     el = '#'
-    el * player.hp
+    el * player.stats[:hp]
   end
 
   def print_mana(player)
     el = '#'
-    el * player.mana
+    el * player.stats[:mana]
   end
 
   def print_effects(player)
     player.status.each do |stat|
-      if stat[1][1].is_a? TrueClass
+      if stat[1][1].is_a?(TrueClass)
         print "\n#{stat[0]} lasts for #{stat[1][0]} turn(s)"
       end
     end
-    print "\nDef #{player.defence} \nDmg #{player.damage} \nHit Chance #{player.hit_chance}"
+    print "\nDef #{player.stats[:defence]} \nDmg #{player.stats[:damage]} \nHit Chance #{player.stats[:hit_chance]}"
   end
 
   def print_stats(player)

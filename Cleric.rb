@@ -2,7 +2,7 @@ require "./hero.rb"
 
 class Cleric < Hero
 
-  MANA = 40
+  MANA = 50
   HP = 45
   DEFENCE = 4
   DAMAGE = 5

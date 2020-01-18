@@ -10,18 +10,21 @@ class Hero
             curse: [0, false],
             stance: [0, false]
         }
-    @hp = self.class::HP
-    @mana = self.class::MANA
-    @defence = self.class::DEFENCE
-    @damage = self.class::DAMAGE
-    @hit_chance = self.class::HIT_CHANCE
-    @abilities = self.class::ABILITIES 
+    @stats =
+        {
+    hp: self.class::HP,
+    mana: self.class::MANA,
+    defence: self.class::DEFENCE,
+    damage:  self.class::DAMAGE,
+    hit_chance:  self.class::HIT_CHANCE,
 
+       }
+    @abilities = self.class::ABILITIES
     @hero_name = name
 
   end
 
-  attr_accessor :hp, :mana, :defence, :damage, :status, :hero_name, :hit_chance, :abilities
+  attr_accessor :status, :hero_name, :abilities, :stats
 
 
   def self.hero_types
@@ -33,7 +36,7 @@ class Hero
   end
 
   def has_mana?(req_mana)
-    if req_mana > @mana
+    if req_mana > @stats[:mana]
       print "Not enough mana!"
       false
     else
@@ -42,13 +45,13 @@ class Hero
   end
 
   def melee_damage_taken=(damage)
-    if damage >= @hp
+    if damage >= @stats[:hp]
        Game.game_end 
     else
-      if damage > @defence
-        damage -= @defence
-        @hp -= damage
-      elsif damage.between?(1, @defence)
+      if damage > @stats[:defence]
+        damage -= @stats[:defence]
+        @stats[:hp] -= damage
+      elsif damage.between?(1, @stats[:defence])
         print "Attack has been blocked!\n\n\n\n\n"
       elsif damage == 0
         print "Miss!\n\n\n\n\n"
@@ -57,10 +60,10 @@ class Hero
   end
 
   def magic_damage_taken=(damage)
-    if damage >= @hp
+    if damage >= @stats[:hp]
       Game.game_end
     else
-      @hp -= damage
+      @stats[:hp] -= damage
     end
   end
 
@@ -75,7 +78,7 @@ class Hero
   end
 
   def status_check(key,value)
-    if value[1].is_a? TrueClass
+    if value[1].is_a?(TrueClass)
     self.set_default_stats(key, value)
     end 
   end
@@ -84,17 +87,17 @@ class Hero
     self.status[key][1] = false
     case key
     when :stance
-      self.defence -= 5
+      self.stats[:defence] -= 3
     when :shield
-      self.defence -= 5
+      self.stats[:defence] -= 5
     when :curse
-      self.defence += 3
-      self.damage += 3
+      self.stats[:defence] += 3
+      self.stats[:damage] += 3
     when :rage
-      self.damage -= 4
+      self.stats[:damage] -= 4
     when :blessing
-      self.defence -= 3
-      self.damage -= 3
+      self.stats[:defence] -= 4
+      self.stats[:damage] -= 4
     end
   end
 
