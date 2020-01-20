@@ -1,3 +1,4 @@
+
 class Hero
 
   def initialize(name)
@@ -8,7 +9,7 @@ class Hero
             blessing: [0, false],
             rage: [0, false],
             curse: [0, false],
-            stance: [0, false]
+            defending_stance: [0, false]
         }
     @stats =
         {
@@ -37,7 +38,7 @@ class Hero
 
   def has_mana?(req_mana)
     if req_mana > @stats[:mana]
-      print "Not enough mana!"
+      print "\nNot enough mana!"
       false
     else
       true
@@ -46,22 +47,23 @@ class Hero
 
   def melee_damage_taken=(damage)
     if damage >= @stats[:hp]
-       Game.game_end 
+       self.game_end 
     else
       if damage > @stats[:defence]
         damage -= @stats[:defence]
         @stats[:hp] -= damage
+        print "#{damage} damage dealed!"
       elsif damage.between?(1, @stats[:defence])
-        print "Attack has been blocked!\n\n\n\n\n"
+        print "\nAttack has been blocked!"
       elsif damage == 0
-        print "Miss!\n\n\n\n\n"
+        print "\nMiss!"
       end
     end
   end
 
   def magic_damage_taken=(damage)
     if damage >= @stats[:hp]
-      Game.game_end
+      self.game_end
     else
       @stats[:hp] -= damage
     end
@@ -86,7 +88,7 @@ class Hero
   def set_default_stats(key, value)
     self.status[key][1] = false
     case key
-    when :stance
+    when :defending_stance
       self.stats[:defence] -= 3
     when :shield
       self.stats[:defence] -= 5
@@ -99,6 +101,19 @@ class Hero
       self.stats[:defence] -= 4
       self.stats[:damage] -= 4
     end
+  end
+
+  def game_end
+    puts "
+          XX     XXXXX   XXXX   XXXXXXX  X    X 
+          X  X   X      X    X     X     X    X
+          X  XX  XXXXX  X    X     X     XXXXXX
+          X  X   X      XXXXXX     X     X    X
+          XX     XXXXX  X    X     X     X    X  
+
+    \n\t\t#{self.hero_name.to_s.upcase} IS DEAD!"
+    sleep 1 
+    Game.end   
   end
 
 end

@@ -1,6 +1,4 @@
-require 'byebug'
-
-
+require "byebug"
 class Abilities
 
 
@@ -18,6 +16,7 @@ class Abilities
 
 
   def ability_choice 
+
     puts "Choose ability"
 
     i = 1
@@ -27,6 +26,8 @@ class Abilities
       i += 1 
     end
 
+    puts "\n\n"
+
     choice = 0
 
     until choice.between?(1, @caster.abilities.size)
@@ -35,28 +36,38 @@ class Abilities
     end
 
     ability = @caster.abilities.keys[choice-1]
-    case ability
-    when :rage, :blessing, :curse, :shield
+    
+    if buffs.keys.include?(ability) 
+
       if @caster.status[ability][1].is_a?(FalseClass)
+
         buff(buffs[ability])
+
       else
         self.ability_choice
       end
-    when :fireball, :firestorm, :lightingbolt
-    damage_spell(dmg_spells[ability])
+
+    elsif spells.keys.include?(ability) 
+
+      cast_spell(spells[ability])
+
     else
+
     method(ability).call
+    
     end
+
   end
 
 
   def heal
+
     req_mana = 6
 
     if @caster.has_mana?(req_mana)
       @caster.stats[:mana] -= req_mana
       @caster.stats[:hp] += rand(6..10)
-      self.hp_overload?
+      
     else 
       self.ability_choice
     end
@@ -85,18 +96,6 @@ class Abilities
 
   end
 
-  def defending_stance
-
-    @caster.status[:stance][0] = 0
-    
-    @caster.status[:stance][1] = true
-    
-    @caster.stats[:defence] += 3
-    
-    puts "#{@caster.hero_name} is in defending stance!"
-  
-  end
-
 
   def blade_dancing
 
@@ -113,64 +112,30 @@ class Abilities
     else
      @opponent.melee_damage_taken = 0
     end
+
   end
+  
 
+  def cast_spell(spell)
 
-  def devastating_blow
-    req_mana = 5
-    if @caster.has_mana?(req_mana)
-      @caster.stats[:mana] -= req_mana
-
-      if rand(@caster.stats[:hit_chance]..10) > rand(1..10)
-        puts "Devastating blow!"
-        @opponent.melee_damage_taken = @caster.stats[:damage] * 1.5
-      else
-        @opponent.melee_damage_taken = 0
-      end
-    
-    else 
-      self.ability_choice
-    end
-  end
-
-
-  def damage_spell(spell)
     req_mana = spell[:mana]
 
     if @caster.has_mana?(req_mana)
     
       @caster.stats[:mana] -= req_mana
 
-      @opponent.magic_damage_taken = rand(spell[:min]..spell[:max])
-    
+      damage = rand(spell[:min]..spell[:max])
+
+      spell[:target].magic_damage_taken = damage
+
+      self.hp_overload?
+
+      puts "#{damage} #{spell[:text]} with #{spell[:spell]}"
     else
       self.ability_choice
     end
+  
   end
-
-
-  def dmg_spells 
-  {
-      fireball: {mana: 6, min: 6, max: 10},
-      firestorm: {mana: 10, min: 10, max: 15},
-      lightingbolt: {mana: 7, min: 8, max: 11}
-  }
-  end 
-
-
-  def buffs 
-  {
-      shield: {spell: :shield, target: @caster, mana: 5, turns: 3, stat: :defence, second_stat: nil, value: 5, second_value: nil,
-      text: "doubled defence for 2 more rounds!" },
-      curse: {spell: :curse, target: @opponent, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: -3, second_value: -3,
-      text: "cursed opponent for 2 more rounds!" }, 
-      rage: {spell: :rage, target: @caster, mana: 5, turns: 2, stat: :damage, second_stat: nil, value: 4, second_value: nil,
-      text: "doubled damage for 2 more rounds!" },
-      blessing: {spell: :blessing, target: @caster, mana: 8, turns: 2, stat: :defence, second_stat: :damage, value: 4, second_value: 4,
-        text: "blessed for 2 more rounds!" }
-      
-  }
-  end 
 
 
   def buff(buffs)
@@ -195,7 +160,32 @@ class Abilities
     end
   end
 
-end
+  def spells 
+  {
+      heal: {spell: "Heal", target: @caster, mana: 6, min: -10, max: -6, text: "HP restored"},
+      devastating_blow: {spell: "Devastating blow", target: @opponent, mana: 5, min: 10, max: 12, text: "damage dealed"},
+      fireball: {spell: "Fireball", target: @opponent, mana: 6, min: 6, max: 10, text: "damage dealed"},
+      firestorm: {spell:"Fire storm", target: @opponent, mana: 10, min: 10, max: 15, text: "damage dealed"},
+      lightingbolt: {spell: "Lighting bolt", target: @opponent, mana: 7, min: 8, max: 11, text: "damage dealed"}
+  }
+  end 
 
+
+  def buffs 
+  {  
+      defending_stance: {spell: :defending_stance, target: @caster, mana: 0, turns: 1, stat: :defence, second_stat: nil, value: 3, second_value: nil, 
+        text: "is in Defending stance!" }, 
+      shield: {spell: :shield, target: @caster, mana: 5, turns: 3, stat: :defence, second_stat: nil, value: 5, second_value: nil,
+        text: "Increased defence for 2 more rounds!" },
+      curse: {spell: :curse, target: @opponent, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: -3, second_value: -3,
+        text: "Opponent cursed for 2 more rounds!" }, 
+      rage: {spell: :rage, target: @caster, mana: 5, turns: 3, stat: :damage, second_stat: nil, value: 4, second_value: nil,
+        text: "Increased damage for 2 more rounds!" },
+      blessing: {spell: :blessing, target: @caster, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: 4, second_value: 4,
+        text: "Blessed for 2 more rounds!" }
+  }
+  end 
+
+end 
 
 

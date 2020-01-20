@@ -1,28 +1,54 @@
 
 class Game
 
-  attr_accessor :turn, :player1, :player2 
+  attr_accessor :turn, :player1, :player2, :end 
 
   def initialize
+
     @player1 = Game.hero_create
     @player2 = Game.hero_create
+    
     @current_turn = 0
+    
     @turn = Abilities.new(@player1, @player2)
+    
+    @@end = 0
   end
 
-  def new_turn
-    self.cli
-    puts "#{@player1.hero_name} turn!"
-    @turn.ability_choice
-    @turn.switch_sides
-    self.cli
-    puts "#{@player2.hero_name} turn!"
-    @turn.ability_choice
-    @current_turn += 1
-    @turn.switch_sides
-    @player1.stats_update
-    @player2.stats_update
+  def game_start  
+
+    loop do 
+
+      @current_turn += 1
+
+      break if @@end == 999 
+      
+      new_turn(player1)
+      
+      break if @@end == 999
+      
+      new_turn(player2)
+
+    end
+
   end
+
+  def new_turn(player)
+      
+    Game.clear
+    self.cli
+
+    puts "#{player.hero_name} turn!"
+    @turn.ability_choice
+
+    sleep 1
+
+    @turn.switch_sides
+
+
+    player.stats_update
+  
+  end 
 
   def current_turn
     @current_turn
@@ -76,18 +102,68 @@ class Game
     Hero.create(choice, name)
   end
 
-  def self.game_end
-    byebug
-    puts "XX     XXXXX   XXXX   XXXXXXX  X    X 
-          X  X   X      X    X     X     X    X
-          X  XX  XXXXX  X    X     X     XXXXXX
-          X  X   X      XXXXXX     X     X    X
-          XX     XXXXX  X    X     X     X    X  
+  def self.end 
+    @@end = 999 
+  end 
+  
+  def self.clear 
+    print "
 
-    \t\t#{@turn.opponent.hero_name} is dead!"
-    sleep 1 
-    eval("break")  
-  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    \r" 
+  end 
 
 end
+
 
