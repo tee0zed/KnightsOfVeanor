@@ -1,40 +1,38 @@
+# frozen_string_literal: true
+
 require './lib/abilities.rb'
 
 class Hero
-
   def initialize(name)
-
     @status =
-        {
-            shield: [0, false],
-            blessing: [0, false],
-            rage: [0, false],
-            curse: [0, false],
-            defending_stance: [0, false]
-        }
+      {
+        shield: [0, false],
+        blessing: [0, false],
+        rage: [0, false],
+        curse: [0, false, false],
+        defending_stance: [0, false]
+      }
     @stats =
-        {
-    hp: self.class::HP,
-    mana: self.class::MANA,
-    defence: self.class::DEFENCE,
-    damage:  self.class::DAMAGE,
-    hit_chance:  self.class::HIT_CHANCE,
+      {
+        hp: self.class::HP,
+        mana: self.class::MANA,
+        defence: self.class::DEFENCE,
+        damage: self.class::DAMAGE,
+        hit_chance: self.class::HIT_CHANCE
 
-       }
+      }
     @abilities = self.class::ABILITIES
     @hero_name = name
-
   end
 
   attr_accessor :status, :hero_name, :abilities, :stats
-
-
+  #todo
   def self.hero_types
     [Knight, Cleric, Battlemage, Thief]
   end
 
   def self.create(type, name)
-    return Hero.hero_types[type - 1].new(name)
+    Hero.hero_types[type - 1].new(name)
   end
 
   def has_mana?(req_mana)
@@ -48,7 +46,7 @@ class Hero
 
   def melee_damage_taken=(damage)
     if damage >= @stats[:hp]
-       self.game_end 
+      game_end
     else
       if damage > @stats[:defence]
         damage -= @stats[:defence]
@@ -64,24 +62,19 @@ class Hero
 
   def magic_damage_taken=(damage)
     if damage >= @stats[:hp]
-      self.game_end
+      game_end
     else
       @stats[:hp] -= damage
     end
   end
 
   def game_end
+    puts File.open('./lib/logo2', &:read)
 
-    puts File.open('./lib/logo2'){|f| f.read}
+    puts "\n\t\t#{hero_name.to_s.upcase} IS DEAD!"
 
-    puts "\n\t\t#{self.hero_name.to_s.upcase} IS DEAD!"
-    
-    sleep 1 
-    
+    sleep 1
+
     Game.end
-
   end
-
 end
-
-

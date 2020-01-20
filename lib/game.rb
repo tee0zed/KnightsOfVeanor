@@ -1,42 +1,36 @@
+# frozen_string_literal: true
 
 class Game
-
-  attr_accessor :turn, :player1, :player2, :end 
+  attr_accessor :turn, :player1, :player2, :end
 
   def initialize
-
     @player1 = Game.hero_create
     @player2 = Game.hero_create
-    
+
     @current_turn = 0
-    
+
     @turn = Abilities.new(@player1, @player2)
-    
+
     @@end = 0
   end
 
-  def game_start  
-
-    loop do 
-
+  def game_start
+    loop do
       @current_turn += 1
 
-      break if @@end == 999 
-      
-      new_turn(player1)
-      
       break if @@end == 999
-      
+
+      new_turn(player1)
+
+      break if @@end == 999
+
       new_turn(player2)
-
     end
-
   end
 
   def new_turn(player)
-      
     Game.clear
-    self.cli
+    cli
 
     puts "#{player.hero_name} turn!"
     @turn.ability_choice
@@ -44,19 +38,12 @@ class Game
     sleep 1
 
     @turn.switch_sides
-
-
-    @turn.stats_update
-  
-  end 
-
-  def current_turn
-    @current_turn
   end
 
+  attr_reader :current_turn
 
   def cli
-    print "\t   >>>>>>>>>>#{self.current_turn} TURN<<<<<<<<<<\n\r"
+    print "\t   >>>>>>>>>>#{current_turn} TURN<<<<<<<<<<\n\r"
     print "\n=======================================================\r"
     print "#{print_stats(@player1)}\r"
     print "\n=======================================================\r"
@@ -97,16 +84,16 @@ class Game
     until choice.between?(1, Hero.hero_types.size)
       choice = STDIN.gets.chomp.to_i
     end
-    puts "Name your character:"
+    puts 'Name your character:'
     name = STDIN.gets.chomp
     Hero.create(choice, name)
   end
 
-  def self.end 
-    @@end = 999 
-  end 
-  
-  def self.clear 
+  def self.end
+    @@end = 999
+  end
+
+  def self.clear
     print "
 
 
@@ -161,9 +148,6 @@ class Game
 
 
 
-    \r" 
-  end 
-
+    \r"
+  end
 end
-
-
