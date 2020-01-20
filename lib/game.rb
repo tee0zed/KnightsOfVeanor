@@ -46,7 +46,7 @@ class Game
     @turn.switch_sides
 
 
-    player.stats_update
+    @turn.stats_update
   
   end 
 

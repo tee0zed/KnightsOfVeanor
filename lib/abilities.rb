@@ -14,6 +14,35 @@ class Abilities
     @caster, @opponent = @opponent, @caster
   end
 
+  def stats_update
+    @caster.status.each do |key, value|
+      if value[0].zero?
+        self.status_check(key,value)
+      else
+        value[0] -= 1
+      end
+    end
+  end
+
+  def status_check(key,value)
+    if value[1].is_a?(TrueClass)
+    self.set_default_stats(key, value)
+    end 
+  end
+
+  def set_default_stats(key, value)
+
+    @caster.status[key][1] = false
+
+    spell = buffs[key]  
+    
+    @caster.stats[spell[:stat]] -= spell[:value]
+      
+      unless spell[:second_stat].nil?
+        @caster.stats[spell[:second_stat]] -= spell[:second_value]
+      end
+
+  end
 
   def ability_choice 
 

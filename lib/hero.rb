@@ -1,3 +1,4 @@
+require './lib/abilities.rb'
 
 class Hero
 
@@ -69,51 +70,16 @@ class Hero
     end
   end
 
-  def stats_update
-    self.status.each do |key, value|
-      if value[0].zero?
-        self.status_check(key,value)
-      else
-        value[0] -= 1
-      end
-    end
-  end
-
-  def status_check(key,value)
-    if value[1].is_a?(TrueClass)
-    self.set_default_stats(key, value)
-    end 
-  end
-
-  def set_default_stats(key, value)
-    self.status[key][1] = false
-    case key
-    when :defending_stance
-      self.stats[:defence] -= 3
-    when :shield
-      self.stats[:defence] -= 5
-    when :curse
-      self.stats[:defence] += 3
-      self.stats[:damage] += 3
-    when :rage
-      self.stats[:damage] -= 4
-    when :blessing
-      self.stats[:defence] -= 4
-      self.stats[:damage] -= 4
-    end
-  end
-
   def game_end
-    puts "
-          XX     XXXXX   XXXX   XXXXXXX  X    X 
-          X  X   X      X    X     X     X    X
-          X  XX  XXXXX  X    X     X     XXXXXX
-          X  X   X      XXXXXX     X     X    X
-          XX     XXXXX  X    X     X     X    X  
 
-    \n\t\t#{self.hero_name.to_s.upcase} IS DEAD!"
+    puts File.open('./lib/logo2'){|f| f.read}
+
+    puts "\n\t\t#{self.hero_name.to_s.upcase} IS DEAD!"
+    
     sleep 1 
-    Game.end   
+    
+    Game.end
+
   end
 
 end
