@@ -21,24 +21,25 @@ class Abilities
       end
     end
   end
+  
+  def status_check(key, value)
+   set_default_stats(key, value) if value[1].is_a?(TrueClass)
+  end
+  
+  def set_default_stats(key, value)
 
-  #todo
-  #
-  #def status_check(key, value)
-  #  set_default_stats(key, value) if value[1].is_a?(TrueClass)
-  #end
-  #
-  #def set_default_stats(key, _value)
-  #  @caster.status[key][1] = false
-  #
-  #  spell = buffs[key]
-  #
-  #  @caster.stats[spell[:stat]] -= spell[:value]
-  #
-  #  unless spell[:second_stat].nil?
-  #    @caster.stats[spell[:second_stat]] -= spell[:second_value]
-  #  end
-  #end
+   @caster.status[key][1] = false
+
+   @opponent.status[:curse][2] = false if key == :curse  
+  
+   spell = buffs[key]
+  
+   @caster.stats[spell[:stat]] -= spell[:value]
+  
+   unless spell[:second_stat].nil?
+     @caster.stats[spell[:second_stat]] -= spell[:second_value]
+   end
+  end
 
   def ability_choice
     puts 'Choose ability'
@@ -60,24 +61,30 @@ class Abilities
     end
 
     ability = @caster.abilities.keys[choice - 1]
-
+     
     if buffs.keys.include?(ability)
 
       if ability == :curse
-
-        @caster.status[:curse][2].is_a?(FalseClass)
-
-        buff(buffs[:curse])
+        
+        if @caster.status[:curse][2].is_a?(FalseClass)
+          
+          buff(buffs[:curse])
+        
+        else 
+          
+          ability_choice
+        
+        end 
 
       else
 
         if @caster.status[ability][1].is_a?(FalseClass)
 
-        buff(buffs[ability])
+          buff(buffs[ability])
 
         else
 
-        ability_choice
+          ability_choice
 
         end
 
@@ -165,10 +172,8 @@ class Abilities
     req_mana = buffs[:mana]
     if @caster.has_mana?(req_mana)
 
-      if buffs == :curse
-        @caster.status[:curse][2] = true
-      end
-
+      @caster.status[:curse][2] = true if buffs[:spell] == :curse 
+      
       buffs[:target].status[buffs[:spell]][0] = buffs[:turns]
 
       buffs[:target].status[buffs[:spell]][1] = true

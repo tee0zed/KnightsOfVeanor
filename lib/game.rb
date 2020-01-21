@@ -1,11 +1,13 @@
 # frozen_string_literal: true
-
+require 'byebug'
 class Game
   attr_accessor :turn, :player1, :player2, :end
 
   def initialize
-    @player1 = Game.hero_create
-    @player2 = Game.hero_create
+    @player1 = nil
+    @player2 = nil
+
+    self.hero_create 
 
     @current_turn = 0
 
@@ -20,18 +22,18 @@ class Game
 
       break if @@end == 999
 
-      new_turn(player1)
+      new_turn(@player1)
 
       break if @@end == 999
 
-      new_turn(player2)
+      new_turn(@player2)
     end
   end
 
   def new_turn(player)
     Game.clear
     cli
-
+    
     puts "#{player.hero_name} turn!"
     @turn.ability_choice
 
@@ -75,18 +77,36 @@ class Game
     print_effects(player)
   end
 
-  def self.hero_create
-    puts "Player choose your character:\r"
+  def hero_create
+    puts "Player1 choose your character:\r"
+
     Hero.hero_types.each_with_index do |hero, i|
       puts "#{i + 1} - #{hero}"
     end
+
     choice = 0
+    
     until choice.between?(1, Hero.hero_types.size)
       choice = STDIN.gets.chomp.to_i
     end
-    puts 'Name your character:'
-    name = STDIN.gets.chomp
-    Hero.create(choice, name)
+
+     puts "Player2 choose your character:\r"
+
+     choice2 = 0
+
+    until choice2.between?(1, Hero.hero_types.size) && choice2 != choice
+      puts "\n#{Hero.hero_types[choice-1]} - Unaviable"
+      choice2 = STDIN.gets.chomp.to_i
+    end
+
+    puts ' Player1 name your character:'
+    name1 = STDIN.gets.chomp
+
+    puts 'Player2 name your character:'
+    name2 = STDIN.gets.chomp
+
+   @player1 = Hero.create(choice, name1)
+   @player2 = Hero.create(choice2, name2)
   end
 
   def self.end

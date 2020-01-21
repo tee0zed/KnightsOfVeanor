@@ -26,7 +26,7 @@ class Hero
   end
 
   attr_accessor :status, :hero_name, :abilities, :stats
-  #todo
+  
   def self.hero_types
     [Knight, Cleric, Battlemage, Thief]
   end
