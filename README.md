@@ -7,3 +7,5 @@ To add class just copy one in `lib/heroes` and change stats to desired, don't fo
 
 To add custom abilities or\and change existing, use methods `buffs` and `spells` in `lib/abilities.rb` as examples. Just add 
 new spell to hash in likeness of existing and enjoy. 
+
+[![Run on Repl.it](https://repl.it/badge/github/tee0zed/KnightsOfVeanor)](https://repl.it/github/tee0zed/KnightsOfVeanor)
