@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'byebug'
+
 class Game
   attr_accessor :turn, :player1, :player2, :end
 
