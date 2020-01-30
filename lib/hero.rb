@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './lib/abilities.rb'
+require './lib/scene.rb'
 
 class Hero
   def initialize(name)
@@ -9,7 +9,7 @@ class Hero
         shield: [0, false],
         blessing: [0, false],
         rage: [0, false],
-        curse: [0, false, false],
+        curse: [0, false],
         defending_stance: [0, false]
       }
     @stats =
@@ -33,15 +33,6 @@ class Hero
 
   def self.create(type, name)
     Hero.hero_types[type - 1].new(name)
-  end
-
-  def has_mana?(req_mana)
-    if req_mana > @stats[:mana]
-      print "\nNot enough mana!"
-      false
-    else
-      true
-    end
   end
 
   def melee_damage_taken=(damage)
@@ -75,6 +66,6 @@ class Hero
 
     sleep 1
 
-    Game.end
+    Game.game_over
   end
 end

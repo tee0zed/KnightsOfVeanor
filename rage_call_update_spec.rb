@@ -1,9 +1,7 @@
 require 'rspec'
 
-require 'byebug'
-
 require './lib/game.rb'
-require './lib/abilities.rb'
+require './lib/scene.rb'
 require './lib/hero.rb'
 require './lib/heroes/Knight.rb'
 require './lib/heroes/Battlemage.rb'
@@ -12,21 +10,23 @@ require './lib/heroes/Cleric.rb'
 
 
 
-describe 'Game' do 
+describe 'Scene' do 
 
 	knight = Hero.create(1, "knight")
 	
 	battlemage = Hero.create(3, "battlemage")
 	
-	test_turn = Game.new(knight, battlemage)
+	test_game = Game.new(knight, battlemage)
 
-	rage = test_turn.turn.buffs[:rage]
+	test_game.create_scene 
 
-	knight.mana = 9999 
+	rage = test_game.scene.buffs[:rage]
+
+	knight.stats[:mana] = 9999 
 
 	it 'should do ok for rage' do 	
 
-		test_turn.turn.buff(rage)
+		test_game.scene.buff(rage)
 
 		expect(knight.status[:rage][1]).to eq true
 
@@ -36,24 +36,24 @@ describe 'Game' do
 
 	
 		
-		test_turn.turn.buff(rage)
+		test_game.scene.buff(rage)
 
 		expect(knight.stats[:damage]).to eq 11 
 
-		test_turn.stats_update(knight) 
+		test_game.stats_update(knight) 
 
 		expect(knight.status[:rage][1]).to eq true
 		expect(knight.status[:rage][0]).to eq 2
 
 	end 
 
-	it 'should reset stats after buff expires' do 
+	it 'should reset stats after rage expires' do 
 
-		test_turn.turn.buff(rage)
+		test_game.scene.buff(rage)
 
 		expect(knight.stats[:damage]).to eq 11 
 
-		3.times{test_turn.stats_update(knight)}
+		3.times{test_game.stats_update(knight)}
 
 		expect(knight.status[:rage][1]).to eq false
 		expect(knight.status[:rage][0]).to eq 0
@@ -61,25 +61,25 @@ describe 'Game' do
 
 	end 
 
-	it 'should renew buff when player repeats same and behave as expected'  do 
+	it 'should renew rage when player recall it'  do 
 
-		test_turn.turn.buff(rage)
+		test_game.scene.buff(rage)
 
 		expect(knight.stats[:damage]).to eq 11 
 
-		2.times{test_turn.stats_update(knight)}
+		2.times{test_game.stats_update(knight)}
 
 		expect(knight.status[:rage][1]).to eq true 
 		expect(knight.status[:rage][0]).to eq 1
 		expect(knight.stats[:damage]).to eq 11
 
-		test_turn.turn.buff(test_turn.turn.buffs[:rage])
+		test_game.scene.buff(test_game.scene.buffs[:rage])
 
 		expect(knight.status[:rage][1]).to eq true 
 		expect(knight.status[:rage][0]).to eq 3
 		expect(knight.stats[:damage]).to eq 11
 
-		3.times{test_turn.stats_update(knight)}
+		3.times{test_game.stats_update(knight)}
 
 		expect(knight.status[:rage][1]).to eq false
 		expect(knight.status[:rage][0]).to eq 0
@@ -89,7 +89,7 @@ describe 'Game' do
 
 	it 'should do ok for rage call' do 	
 
-		test_turn.turn.ability_call(3)
+		test_game.scene.ability_call(3)
 
 		expect(knight.status[:rage][1]).to eq true
 

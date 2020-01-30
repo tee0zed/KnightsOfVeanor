@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Abilities
+class Scene
   attr_accessor :caster, :opponent
 
   def initialize(player1, player2)
@@ -11,17 +11,37 @@ class Abilities
   def switch_sides
     @caster, @opponent = @opponent, @caster
   end
-  
+
   def ability_call(choice)
     ability = @caster.abilities.keys[choice - 1]
      
     if buffs.keys.include?(ability)
       
-     @caster.stats[:mana] >= buffs[ability][:mana] ? buff(buffs[ability]) : ability_call(ability_choice){puts "Not enough mana!"}
+      if @caster.stats[:mana] >= buffs[ability][:mana] 
+        
+        buff(buffs[ability])
+
+      else 
+
+        puts "Not enough mana!"
+        
+        self.ability_call(self.ability_choice)
+        
+      end 
 
     elsif spells.keys.include?(ability)
 
-      @caster.stats[:mana] >= spells[ability][:mana] ? cast_spell(spells[ability]) : ability_call(ability_choice){puts "Not enough mana!"}
+      if @caster.stats[:mana] >= spells[ability][:mana]
+
+        cast_spell(spells[ability])
+      
+      else 
+        
+        puts "Not enough mana!"
+        
+        self.ability_call(self.ability_choice)
+
+      end 
 
     else
 
@@ -48,7 +68,7 @@ class Abilities
       puts "Input must be between 1 and #{@caster.abilities.size}"
       choice = STDIN.gets.chomp.to_i
     end
-    return choice
+    choice
   end 
 
   def attack
@@ -77,9 +97,8 @@ class Abilities
   end
 
   def cast_spell(spell)
-      req_mana = spell[:mana]
-
-      @caster.stats[:mana] -= req_mana
+    
+      @caster.stats[:mana] -= spell[:mana]
 
       damage = rand(spell[:min]..spell[:max])
     
@@ -92,18 +111,19 @@ class Abilities
     
     if buffs[:target].status[buffs[:spell]][1]
 
+      @caster.stats[:mana] -= buffs[:mana]
+
       buffs[:target].status[buffs[:spell]][0] = buffs[:turns] 
 
       puts "#{@caster.hero_name} #{buffs[:text]}"
 
-    else 
-      req_mana = buffs[:mana]
+    else  
       
       buffs[:target].status[buffs[:spell]][0] = buffs[:turns]
 
       buffs[:target].status[buffs[:spell]][1] = true
 
-      @caster.stats[:mana] -= req_mana
+      @caster.stats[:mana] -= buffs[:mana]
 
       buffs[:target].stats[buffs[:stat]] += buffs[:value]
 
