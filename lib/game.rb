@@ -11,11 +11,11 @@ class Game
 
     @@game_over = false
 
-    @scene = nil 
+    @scene = nil
   end
 
   def game_start
-    loop do 
+    loop do
       @current_turn += 1
 
       break if Game.game_over?
@@ -33,14 +33,14 @@ class Game
 
   def create_scene
     @scene = Scene.new(@player1, @player2)
-  end 
+  end
 
   def new_turn(player)
-    
+
     Game.clear
-    
+
     cli
-    
+
     puts "#{player.hero_name} turn!"
 
     @scene.ability_call(@scene.ability_choice)
@@ -92,13 +92,13 @@ class Game
     end
 
     choice = 0
-    
+
     until choice.between?(1, Hero.hero_types.size)
       choice = STDIN.gets.chomp.to_i
     end
 
     puts ' Player1 name your character:'
-    
+
     name1 = STDIN.gets.chomp
 
     puts "Player2 choose your character:\r"
@@ -106,15 +106,15 @@ class Game
     choice2 = 0
 
     until choice2.between?(1, Hero.hero_types.size) && choice2 != choice
-      puts "\n#{Hero.hero_types[choice-1]} - Unaviable"
+      puts "\n#{Hero.hero_types[choice - 1]} - Unaviable"
       choice2 = STDIN.gets.chomp.to_i
     end
 
     puts 'Player2 name your character:'
     name2 = STDIN.gets.chomp
 
-   @player1 = Hero.create(choice, name1)
-   @player2 = Hero.create(choice2, name2)
+    @player1 = Hero.create(choice, name1)
+    @player2 = Hero.create(choice2, name2)
   end
 
   def stats_update(player)
@@ -122,9 +122,9 @@ class Game
       unless value[0].zero?
         value[0] -= 1
 
-        if value[0].zero? 
-        
-          value[1] = false 
+        if value[0].zero?
+
+          value[1] = false
 
           spell = @scene.buffs[key]
 
@@ -133,18 +133,18 @@ class Game
           unless spell[:second_stat].nil?
             player.stats[spell[:second_stat]] -= spell[:second_value]
           end
-        end 
+        end
       end
     end
   end
 
   def self.game_over
-    @@game_over = true 
+    @@game_over = true
   end
 
   def self.game_over?
     @@game_over
-  end 
+  end
 
   def self.clear
     system "cls"

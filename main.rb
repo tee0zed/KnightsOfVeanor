@@ -15,7 +15,7 @@ Game.clear
 
 game = Game.new
 
-game.hero_create 
+game.hero_create
 
 game.create_scene
 

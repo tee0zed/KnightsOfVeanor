@@ -8,7 +8,7 @@ class Knight < Hero
   DEFENCE = 5
   DAMAGE = 7
   HIT_CHANCE = 8
-  ABILITIES = { attack: 'Attack', defending_stance: 'Defending stance - +3 def for next turn', rage: 'Rage - +4 dmg for 2 turns', devastating_blow: 'Devastating blow - (10-12)dmg -5 MP' }.freeze
+  ABILITIES = {attack: 'Attack', defending_stance: 'Defending stance - +3 def for next turn', rage: 'Rage - +4 dmg for 2 turns', devastating_blow: 'Devastating blow - (10-12)dmg -5 MP'}.freeze
 
   def initialize(name)
     super

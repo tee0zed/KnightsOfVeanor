@@ -14,34 +14,34 @@ class Scene
 
   def ability_call(choice)
     ability = @caster.abilities.keys[choice - 1]
-     
+
     if buffs.keys.include?(ability)
-      
-      if @caster.stats[:mana] >= buffs[ability][:mana] 
-        
+
+      if @caster.stats[:mana] >= buffs[ability][:mana]
+
         buff(buffs[ability])
 
-      else 
+      else
 
         puts "Not enough mana!"
-        
+
         self.ability_call(self.ability_choice)
-        
-      end 
+
+      end
 
     elsif spells.keys.include?(ability)
 
       if @caster.stats[:mana] >= spells[ability][:mana]
 
         cast_spell(spells[ability])
-      
-      else 
-        
+
+      else
+
         puts "Not enough mana!"
-        
+
         self.ability_call(self.ability_choice)
 
-      end 
+      end
 
     else
 
@@ -69,7 +69,7 @@ class Scene
       choice = STDIN.gets.chomp.to_i
     end
     choice
-  end 
+  end
 
   def attack
     if rand(10) < rand(@caster.stats[:hit_chance]..10)
@@ -97,28 +97,28 @@ class Scene
   end
 
   def cast_spell(spell)
-    
-      @caster.stats[:mana] -= spell[:mana]
 
-      damage = rand(spell[:min]..spell[:max])
-    
-      spell[:target].magic_damage_taken = damage
+    @caster.stats[:mana] -= spell[:mana]
 
-      puts "#{damage} #{spell[:text]} with #{spell[:spell]}"
+    damage = rand(spell[:min]..spell[:max])
+
+    spell[:target].magic_damage_taken = damage
+
+    puts "#{damage} #{spell[:text]} with #{spell[:spell]}"
   end
 
   def buff(buffs)
-    
+
     if buffs[:target].status[buffs[:spell]][1]
 
       @caster.stats[:mana] -= buffs[:mana]
 
-      buffs[:target].status[buffs[:spell]][0] = buffs[:turns] 
+      buffs[:target].status[buffs[:spell]][0] = buffs[:turns]
 
       puts "#{@caster.hero_name} #{buffs[:text]}"
 
-    else  
-      
+    else
+
       buffs[:target].status[buffs[:spell]][0] = buffs[:turns]
 
       buffs[:target].status[buffs[:spell]][1] = true
@@ -132,32 +132,32 @@ class Scene
       end
 
       puts "#{@caster.hero_name} #{buffs[:text]}"
-    end 
-  end
-    
-  def spells  
-  {
-    heal: { spell: 'Heal', target: @caster, mana: 6, min: -10, max: -6, text: 'HP restored' },
-    devastating_blow: { spell: 'Devastating blow', target: @opponent, mana: 5, min: 10, max: 12, text: 'damage dealed' },
-    fireball: { spell: 'Fireball', target: @opponent, mana: 6, min: 6, max: 10, text: 'damage dealed' },
-    firestorm: { spell: 'Fire storm', target: @opponent, mana: 10, min: 10, max: 15, text: 'damage dealed' },
-    lightingbolt: { spell: 'Lighting bolt', target: @opponent, mana: 7, min: 8, max: 11, text: 'damage dealed' }
-  }
+    end
   end
 
-  def buffs 
-  {
-    defending_stance: { spell: :defending_stance, target: @caster, mana: 0, turns: 1, stat: :defence, second_stat: nil, value: 3, second_value: nil,
-                        text: 'is in Defending stance!' },
-    shield: { spell: :shield, target: @caster, mana: 5, turns: 3, stat: :defence, second_stat: nil, value: 5, second_value: nil,
-              text: 'Increased defence for 2 more rounds!' },
-    curse: { spell: :curse, target: @opponent, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: -4, second_value: -4,
-             text: 'Opponent cursed for 2 more rounds!' },
-    rage: { spell: :rage, target: @caster, mana: 5, turns: 3, stat: :damage, second_stat: nil, value: 4, second_value: nil,
-            text: 'Increased damage for 2 more rounds!' },
-    blessing: { spell: :blessing, target: @caster, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: 4, second_value: 4,
-                text: 'Blessed for 2 more rounds!' }
-  }
-   
-  end   
+  def spells
+    {
+        heal: {spell: 'Heal', target: @caster, mana: 6, min: -10, max: -6, text: 'HP restored'},
+        devastating_blow: {spell: 'Devastating blow', target: @opponent, mana: 5, min: 10, max: 12, text: 'damage dealed'},
+        fireball: {spell: 'Fireball', target: @opponent, mana: 6, min: 6, max: 10, text: 'damage dealed'},
+        firestorm: {spell: 'Fire storm', target: @opponent, mana: 10, min: 10, max: 15, text: 'damage dealed'},
+        lightingbolt: {spell: 'Lighting bolt', target: @opponent, mana: 7, min: 8, max: 11, text: 'damage dealed'}
+    }
+  end
+
+  def buffs
+    {
+        defending_stance: {spell: :defending_stance, target: @caster, mana: 0, turns: 1, stat: :defence, second_stat: nil, value: 3, second_value: nil,
+                           text: 'is in Defending stance!'},
+        shield: {spell: :shield, target: @caster, mana: 5, turns: 3, stat: :defence, second_stat: nil, value: 5, second_value: nil,
+                 text: 'Increased defence for 2 more rounds!'},
+        curse: {spell: :curse, target: @opponent, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: -4, second_value: -4,
+                text: 'Opponent cursed for 2 more rounds!'},
+        rage: {spell: :rage, target: @caster, mana: 5, turns: 3, stat: :damage, second_stat: nil, value: 4, second_value: nil,
+               text: 'Increased damage for 2 more rounds!'},
+        blessing: {spell: :blessing, target: @caster, mana: 8, turns: 3, stat: :defence, second_stat: :damage, value: 4, second_value: 4,
+                   text: 'Blessed for 2 more rounds!'}
+    }
+
+  end
 end
