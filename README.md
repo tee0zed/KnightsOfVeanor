@@ -9,3 +9,6 @@ To add custom abilities or\and change existing, use methods `buffs` and `spells`
 new spell to hash in likeness of existing and enjoy. 
 
 [![Run on Repl.it](https://repl.it/badge/github/tee0zed/KnightsOfVeanor)](https://repl.it/github/tee0zed/KnightsOfVeanor)
+
+# Requiremens 
+- ruby 2.6.5
