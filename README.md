@@ -1,3 +1,5 @@
+# KnightsOfVeanor
+
 Step by step battlegame. 
 
 Feel free to add your own classes and abilities or\and change forked source code. Game is completely open-source, credits added
@@ -10,5 +12,5 @@ new spell to hash in likeness of existing and enjoy.
 
 [![Run on Repl.it](https://repl.it/badge/github/tee0zed/KnightsOfVeanor)](https://repl.it/github/tee0zed/KnightsOfVeanor)
 
-# Requiremens 
+# Requirements 
 - ruby 2.6.5
