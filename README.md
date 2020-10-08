@@ -1,5 +1,7 @@
 # KnightsOfVeanor
 
+**Dont judge me hard: this game has been written on third month after my very first hello world created. I want it stay untouched.**
+
 Step by step battlegame. 
 
 Feel free to add your own classes and abilities or\and change forked source code. Game is completely open-source, credits added
