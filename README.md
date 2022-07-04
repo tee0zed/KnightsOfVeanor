@@ -7,7 +7,7 @@ Step by step battlegame.
 Feel free to add your own classes and abilities or\and change forked source code. Game is completely open-source, credits added
 for fun only. 
 
-[![Run on Repl.it](https://repl.it/badge/github/tee0zed/KnightsOfVeanor)](https://repl.it/github/tee0zed/KnightsOfVeanor)
+[![Run on Repl.it](https://repl.it/badge/github/tee0zed/KnightsOfVeanor)](https://replit.com/@RMenkl/KnightsOfVeanor-5)
 
 ### Requirements 
 - ruby 2.6.5
